@@ -143,7 +143,7 @@ export default {
   height: 40px;
   margin-right: 30px;
 
-  background-image: url("../assets/bbs-logo.png");
+  background-image: url("@/assets/bbs-logo.png");
   background-repeat: no-repeat;
 
   font-size: 0;

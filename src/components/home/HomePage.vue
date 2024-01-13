@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import ArticleList from "@/components/ArticleList.vue";
-import HotList from "@/components/HotList.vue";
+import ArticleList from "@/components/home/ArticleList.vue";
+import HotList from "@/components/home/HotList.vue";
 import CreativeCenter from "../CreativeCenter.vue";
 export default {
   components: {

@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <meun-bar
-          :avatarImage="user.avatar"
+          :avatarImage="user.avatarUrl"
           :messageNum="count"
           :searchValue="searchVal"
           :historyData="historyList"
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import MeunBar from "@/components/MenuBar.vue";
+import MeunBar from "@/components/home/MenuBar.vue";
 import{mapState} from 'vuex'
 export default {
   components: {

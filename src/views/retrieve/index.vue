@@ -41,46 +41,37 @@
             >
           </div>
         </el-form-item>
+        <el-form-item label="重设密码" prop="password">
+          <el-input
+            type="password"
+            v-model="formData.password"
+            autocomplete="off"
+            placeholder="密码"
+            :disabled="!formData.checkCode"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="确认密码" prop="rePass">
+          <el-input
+            type="password"
+            v-model="formData.rePass"
+            autocomplete="off"
+            placeholder="确认密码"
+            :disabled="!formData.checkCode"
+          ></el-input>
+        </el-form-item>
       </el-form>
       <div class="btn-wrapper">
         <el-button type="primary" @click="onRetrieveBtn()">找回密码</el-button>
         <el-button type="primary" @click="back()">返回</el-button>
       </div>
-      <el-dialog title="重设密码" :visible.sync="dialogFormVisible" :modal-append-to-body="false">
-        <el-form
-          :model="dialogForm"
-          label-width="100px"
-          ref="retrieveDialogForm"
-          :rules="dialogFormRules"
-        >
-          <el-form-item label="密码" prop="password">
-            <el-input
-              type="password"
-              v-model="dialogForm.password"
-              autocomplete="off"
-              placeholder="密码"
-            ></el-input>
-          </el-form-item>
-
-          <el-form-item label="确认密码" prop="rePass">
-            <el-input
-              type="password"
-              v-model="dialogForm.rePass"
-              autocomplete="off"
-              placeholder="确认密码"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormSubmit">确 定</el-button>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
+import sendCode from "@/api/sendCode";
+
 export default {
   data() {
     const checkPass = (rule, value, callback) => {
@@ -100,22 +91,20 @@ export default {
         checkCode: [
           { required: true, message: "请输入验证码", trigger: "blur" },
         ],
-      },
-      isSend:false,
-      checkCodeText: "发送验证码",
-
-      dialogFormVisible: false,
-      dialogForm: {},
-      dialogFormRules: {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         rePass: [{ validator: checkPass, trigger: "blur" }],
       },
+      isSend: false,
+      checkCodeText: "发送验证码",
     };
   },
   methods: {
     sendCode() {
       this.$refs.retrieveForm.validateField("email", (error) => {
         if (!error) {
+          sendCode({ email: this.formData.email, subject: 0 })
+            .then((res) => {})
+            .catch((err) => this.$message.error(err));
           this.isSend = true;
           var timeout = 59;
           var timer = setInterval(() => {
@@ -133,8 +122,8 @@ export default {
     },
     onRetrieveBtn() {
       //发送请求，返回验证结果
-      //验证结果通过、打开对话框
-      this.dialogFormVisible = true;
+      //验证结果通过
+      
       //不通过
     },
 
@@ -167,7 +156,7 @@ export default {
 
 .body-wrapper {
   width: 35rem;
-  height: 25rem;
+  height: 35rem;
   border-radius: 1.5rem;
   background-color: rgba(255, 255, 255, 0.5);
   margin: 50px auto;

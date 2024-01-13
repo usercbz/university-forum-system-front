@@ -68,10 +68,31 @@
         <router-link to="/login">已有账号,去登录</router-link>
       </div>
     </div>
+
+    <el-dialog
+      title="注册成功"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      :modal-append-to-body="false"
+      center
+    >
+      <div class="dialog-body">
+        <span>账号注册成功,你的账号为:</span>
+        <h2>{{ account }}</h2>
+      </div>
+
+      <div slot="footer">
+        <el-button type="primary" @click="confirmAccount()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import register from "@/api/register";
+import sendCode from "@/api/sendCode";
 export default {
   data() {
     const checkPass = (rule, value, callback) => {
@@ -86,9 +107,7 @@ export default {
     return {
       formData: {},
       rules: {
-        nickname: [
-          { required: true, message: "请输入昵称", trigger: "blur" },
-        ],
+        nickname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         rePass: [{ validator: checkPass, trigger: "blur" }],
         email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
@@ -96,18 +115,49 @@ export default {
           { required: true, message: "请输入验证码", trigger: "blur" },
         ],
       },
-      checkCode: "",
       checkCodeText: "发送验证码",
       isSend: false,
+
+      dialogVisible: false,
+      account: "",
     };
   },
   methods: {
     submitForm() {
-      // TODO 发送请求
+      //校验
+      this.$refs.registerForm.validate((isOk) => {
+        if (isOk) {
+          //成功
+          //构造参数
+          const { nickname, email, checkCode } = this.formData;
+          const password = this.$md5(this.formData.password);
+          //发送请求
+          register({
+            nickname,
+            password,
+            email,
+            checkCode,
+          })
+            .then((data) => {
+              this.account = data.data;
+              this.dialogVisible = true
+            })
+            .catch((err) => {
+              this.$message.error(err);
+            });
+        } else {
+          //失败
+        }
+      });
     },
     sendCode() {
       this.$refs.registerForm.validateField("email", (error) => {
         if (!error) {
+          //发送验证码
+          sendCode({
+            email: this.formData.email,
+            subject: 1,
+          }).catch((err) => this.$message.error(err));
           this.isSend = true;
           var timeout = 59;
           var timer = setInterval(() => {
@@ -122,6 +172,10 @@ export default {
           }, 1000);
         }
       });
+    },
+    confirmAccount() {
+      this.dialogVisible = false;
+      this.$router.push("/login");
     },
   },
 };
@@ -150,19 +204,19 @@ export default {
   flex-direction: column;
 }
 
-h4 {
+.box h4 {
   margin-top: 30px;
   font-size: 30px;
   text-align: center;
   margin-bottom: 40px;
 }
-.form {
+.box .form {
   display: flex;
   flex-direction: column;
   width: 100%;
   align-items: center;
 }
-.el-form-item {
+.form .el-form-item {
   width: 80%;
   margin-bottom: 30px;
 }
@@ -170,22 +224,26 @@ h4 {
   display: flex;
   justify-content: space-between;
 }
-.check-input {
+.check-wrapper .check-input {
   width: 300px;
 }
-.send-code-btn {
+.check-wrapper .send-code-btn {
   width: 111px;
 }
-.bottom {
+.box .bottom {
   display: flex;
   justify-content: space-between;
   width: 80%;
   margin-top: 20px;
 }
-.submit-button {
+.box .bottom .submit-button {
   width: 100px;
 }
-a {
+.box .bottom a {
   line-height: 40px;
+}
+
+.dialog-body {
+  text-align: center;
 }
 </style>

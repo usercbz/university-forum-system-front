@@ -3,11 +3,7 @@
     <div class="info-bar">
       <!-- 头像 -->
       <div class="user-avatar">
-        <el-avatar
-          :size="100"
-          :src="user.avatar"
-          shape="square"
-        ></el-avatar>
+        <el-avatar :size="100" :src="user.avatarUrl" shape="square"></el-avatar>
       </div>
 
       <!-- 详细信息 -->
@@ -39,9 +35,7 @@
           <div class="dialog-avatar-wrapper">
             <el-avatar
               :size="120"
-              :src="
-                updateUser.avatarUrl ? updateUser.avatarUrl : user.avatar
-              "
+              :src="dialogAvatar"
               shape="square"
             ></el-avatar>
             <el-upload
@@ -85,36 +79,45 @@
       </div>
 
       <div class="creation-wrapper">
-        <creation-wrapper :follow="followNums" :fans="fansNums" @clickText="handlerClickText"></creation-wrapper>
+        <creation-wrapper
+          :follow="followNums"
+          :fans="fansNums"
+          @clickText="handlerClickText"
+        ></creation-wrapper>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import CreationWrapper from './CreationWrapper.vue';
-import UpdateForm from './UpdateForm.vue';
-import{mapState} from 'vuex'
+import CreationWrapper from "./CreationWrapper.vue";
+import UpdateForm from "./UpdateForm.vue";
+import { mapState } from "vuex";
 export default {
   mounted() {
     //session里取用户信息
     // let userJSON =  sessionStorage.getItem('userInfo');
     // this.userInfo = JSON.parse(userJSON);
   },
-  components:{
+  components: {
     CreationWrapper,
-    UpdateForm
+    UpdateForm,
   },
-  computed:{
-    ...mapState(['user'])
+  computed: {
+    dialogAvatar() {
+      return this.updateUser.avatarUrl
+        ? this.updateUser.avatarUrl
+        : this.user.avatarUrl;
+    },
+    ...mapState(["user"]),
   },
   data() {
     return {
       dialogVisible: false,
-      
+
       updateUser: {},
-      followNums:3,
-      fansNums:4,
+      followNums: 3,
+      fansNums: 4,
     };
   },
   methods: {
@@ -150,6 +153,7 @@ export default {
     //修改文件触发逻辑
     fileChange(file) {
       this.updateUser.avatarUrl = URL.createObjectURL(file.raw);
+      console.log(this.updateUser.avatarUrl);
     },
     //文件上传逻辑
     uploadFile(params) {
@@ -159,7 +163,7 @@ export default {
     //保存
     save() {
       //提交
-      if (this.updateUser.avatarUrl != this.userInfo.avatarUrl) {
+      if (this.updateUser.avatarUrl != this.user.avatarUrl) {
         this.$refs.upload.submit();
       }
 
@@ -169,22 +173,22 @@ export default {
     cancel() {
       this.dialogVisible = false;
     },
-    handlerClickText(data){
+    handlerClickText(data) {
       // this.$message(data)
       this.$router.push({
-        path:'/home/user/follow',
-        query:{
-          activeName:data
-        }
-      })
-    }
+        path: "/home/user/follow",
+        query: {
+          activeName: data,
+        },
+      });
+    },
   },
 };
 </script>
 
 <style scoped>
 .wrapper {
-  width: 900px;
+  width: 1100px;
   margin: 10px auto;
 }
 .dialog-wrapper {
@@ -219,7 +223,7 @@ export default {
 }
 .body-wrapper {
   display: flex;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 .body-menu-bar {
   border: #e6e6e6 1px solid;
@@ -233,5 +237,4 @@ export default {
   height: 360px;
   margin-left: 10px;
 }
-
 </style>

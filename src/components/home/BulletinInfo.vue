@@ -101,11 +101,7 @@ export default {
           title: "公告",
           content: "这是一段公告",
         },
-        {
-          id: Math.random(),
-          title: "公告",
-          content: "这是一段公告",
-        },
+        
       ],
       dialogData: {},
       dialogVisible: false,
@@ -138,13 +134,15 @@ export default {
 .card-wrapper {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  
+  align-content: flex-start;
   width: 1200px;
 }
 .box-card {
   width: 240px;
   height: 200px;
-  margin-right: 30px;
+  margin-left: 25px;
+  margin-right: 25px;
   margin-bottom: 12px;
 }
 .card-title {

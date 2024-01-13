@@ -47,6 +47,7 @@
 
 <script>
 import SliderVerify from "@/components/SliderVerify.vue";
+import login from "@/api/login";
 export default {
   components: {
     SliderVerify,
@@ -76,9 +77,7 @@ export default {
     return {
       formData: {},
       rules: {
-        account: [
-          { required: true, message: "请输入账号", trigger: "blur" },
-        ],
+        account: [{ required: true, message: "请输入账号", trigger: "blur" }],
         password: [
           { required: true, message: "请输入输入密码", trigger: "blur" },
         ],
@@ -90,13 +89,24 @@ export default {
     submitForm() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          alert("成功");
-        } else {
-          alert("失败");
+          //发送请求
+          const password = this.$md5(this.formData.password);
+          const account = this.formData.account;
+          login({
+            account,
+            password,
+          })
+            .then((res) => {
+              const {user,token} = res.data
+              //保存用户信息
+              
+              //保存token
+            })
+            .catch((err) => this.$message.error(err));
         }
       });
     },
-   
+
     handlerLock(data) {
       if (data) this.$refs.loginForm.validateField("isLock");
     },

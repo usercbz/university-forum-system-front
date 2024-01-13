@@ -2,13 +2,15 @@
   <div class="wrapper">
     <div class="header-wrapper">
       <el-page-header @back="goBack" content="发表文章"></el-page-header>
-      <el-button size="mini">发布</el-button>
+      <el-button  type="primary" size="mini">发布</el-button>
     </div>
 
     <div class="body-wrapper">
+      <el-input placeholder="请输入标题" v-model="title" class="title-input">
+      </el-input>
       <el-input
         type="textarea"
-        placeholder="请输入内容"
+        placeholder="请输入正文"
         v-model="text"
         :rows="8"
         resize="none"
@@ -76,6 +78,7 @@
 export default {
   data() {
     return {
+      title: "",
       text: "",
 
       dialogImageUrl: "",
@@ -115,7 +118,7 @@ export default {
     },
 
     fileChange(file, fileList) {
-      this.$message("文件状态改变");
+      // this.$message("文件状态改变");
       this.fileList.push(file);
     },
   },
@@ -131,8 +134,21 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-between;
-}
 
+  margin-top: 10px;
+}
+.title-input >>> .el-input__inner{
+  padding: 0;
+  padding-bottom: 10px;
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0%;
+
+  font-size: 20px;
+  color: #000;
+  margin-bottom: 20px;
+}
 .textarea >>> .el-textarea__inner {
   border: 0;
   padding: 0;
@@ -144,7 +160,7 @@ export default {
   border-bottom: solid 1px #e6e6e6;
 }
 
-.floor-wrapper{
+.floor-wrapper {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
@@ -152,15 +168,15 @@ export default {
   border-top: solid 1px #e6e6e6;
   border-bottom: solid 1px #e6e6e6;
 }
-.visible-text{
+.visible-text {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.visible-text .el-icon-view{
+.visible-text .el-icon-view {
   margin-right: 10px;
 }
-.el-select{
+.el-select {
   width: 128px;
 }
 .visible-select >>> .el-input__inner {
